@@ -1,9 +1,22 @@
 import csv
-import re
 
 specs = open("MALFE1_part.edn","r")
+# part_keywords = ["ALFE2BGA_A","ALFE2BGA_B","ALFE2BGA_C","ALFE2BGA_D","ALFE2BGA_E","ALFE2BGA_F","ALFE2BGA_G","ALFE2BGA_H"]
+part_keywords = ["ALFE2BGA"]
+long_data = specs.read().splitlines()
+data = list()
+for i in range(len(part_keywords)):
+    for j in range(len(long_data)):
+        if long_data[j].find("cell " + part_keywords[i]) != -1:
+            start = j
+            for k in range(start+1, len(long_data)):
+                if long_data[k].find("cell ") != -1:
+                    stop = k
+                    break
+            for k in range(start, stop):
+                data.append(long_data[k])
 # these lines contain the info about ports, change them for your own use
-data = specs.read().splitlines()[418:1812]
+# data = specs.read().splitlines()[418:1812]
 specs.close()
 
 # generates the list of ports with their raw data
@@ -43,7 +56,7 @@ for i in range(len(ports_list)):
 # sorting and file writing 
 rows.sort()
 header = ["Pin Number", "Pin Name", "Pin Type", "Pin Direction"]
-filename = "alfe_data.csv"
+filename = "alfe_part_data.csv"
 with open(filename, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerow(header)
