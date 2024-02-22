@@ -1,8 +1,10 @@
 import csv
 
 specs = open("MALFE1_part.edn","r")
-# part_keywords = ["ALFE2BGA_A","ALFE2BGA_B","ALFE2BGA_C","ALFE2BGA_D","ALFE2BGA_E","ALFE2BGA_F","ALFE2BGA_G","ALFE2BGA_H"]
+# specs = open("MALFE_symbol.edn","r")
+# finding the part information
 part_keywords = ["ALFE2BGA"]
+# part_keywords = ["ALFE2BGA_A","ALFE2BGA_B","ALFE2BGA_C","ALFE2BGA_D","ALFE2BGA_E","ALFE2BGA_F","ALFE2BGA_G","ALFE2BGA_H"]
 long_data = specs.read().splitlines()
 data = list()
 for i in range(len(part_keywords)):
@@ -15,8 +17,6 @@ for i in range(len(part_keywords)):
                     break
             for k in range(start, stop):
                 data.append(long_data[k])
-# these lines contain the info about ports, change them for your own use
-# data = specs.read().splitlines()[418:1812]
 specs.close()
 
 # generates the list of ports with their raw data
@@ -40,7 +40,7 @@ for i in range(len(ports_list)):
     pin_row = ports_list[i][0]
     pin_name = pin_row[pin_row.find("port")+5:].upper()
     # iterating over other rows to account for differing formats
-    for j in range(len(ports_list[i])):
+    for j in range(min(len(ports_list[i]),9)):
         direction_index = ports_list[i][j].find(direction_key)
         designator_index = ports_list[i][j].find(designator_key)
         pintype_index = ports_list[i][j].find(pintype_key)
@@ -57,6 +57,7 @@ for i in range(len(ports_list)):
 rows.sort()
 header = ["Pin Number", "Pin Name", "Pin Type", "Pin Direction"]
 filename = "alfe_part_data.csv"
+# filename = "alfe_symbol_data.csv"
 with open(filename, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
     csvwriter.writerow(header)
